@@ -1,6 +1,7 @@
 import 'package:auth_app_user/controller/auth.dart';
 import 'package:auth_app_user/controller/user_db_helper.dart';
 import 'package:auth_app_user/model/user_model.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+        print(userList);
+
     return  Scaffold(
       appBar: AppBar(
         title: Text('Home'),
@@ -36,23 +39,24 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: 500,
               width: 500,
-           child: ListView.builder(
-            itemCount: User().userList.length,
+           child: 
+           userList.isEmpty?Text('dddddd'):
+           ListView.builder(
+            itemCount:userList.length,
             itemBuilder: (context, index) {
-               UserModel user = User().userList[index];
-               print(user.name);
-               return Card(
-                color: Colors.red,
-                child: ListTile(
-                  title: Text(user.name!),
-                  subtitle: Text(user.phone!),
-                  // trailing: IconButton(onPressed: (){
-                  //   User().deleteUser(user.id);
-                  //   }, icon: Icon(Icons.delete),)
-                    ));
+               UserModel user = userList[index];
+               return  Card(
+                 child: ListTile(
+                   title: Text(user.name!),
+                   subtitle: Text(user.phone!),
+                   trailing: IconButton(onPressed: (){
+                     User().deleteUserFromDB(user.id!);
+                     }, icon: Icon(Icons.delete),)
+                     ),
+               );
             } ,
             ),
             ),

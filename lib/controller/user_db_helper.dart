@@ -1,6 +1,8 @@
 import 'package:auth_app_user/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+ 
+ 
+  List<UserModel> userList =[];
 class User{
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -24,7 +26,8 @@ addUserToDB(String name, String phone) async {
     }
   }
 
-  List<UserModel> userList = [];
+ 
+  
 
   getUsersFromDB() async {
     try {
@@ -36,24 +39,25 @@ addUserToDB(String name, String phone) async {
       for (var element in users.docs) {
         userList.add(UserModel.fromMap(element));
       }
+      return userList;
     } on Exception catch (e) {
       print("the error is found $e");
     }
   }
+  
 
-  // deleteEventFromDB(String id) async {
-  //   try {
-  //     print("function is called");
-  //     await firestore
-  //         .collection("events")
-  //         .doc(auth.currentUser?.uid)
-  //         .collection('thisUsersEvent')
-  //         .doc(id)
-  //         .delete();
-  //   } catch (e) {
-  //     print('error on $e');
-  //   }
-  // }
+  deleteUserFromDB(String id) async {
+    try {
+      print("function is called");
+      await firestore
+          .collection("userss")
+          .doc(id)
+          .delete();
+          getUsersFromDB();
+    } catch (e) {
+      print('error on $e');
+    }
+  }
 
   
 }

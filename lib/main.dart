@@ -1,3 +1,4 @@
+import 'package:auth_app_user/controller/user_db_helper.dart';
 import 'package:auth_app_user/view/authentication/login_screen.dart';
 import 'package:auth_app_user/view/authentication/widget_tree.dart';
 import 'package:firebase_core/firebase_core.dart';
