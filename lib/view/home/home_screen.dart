@@ -1,7 +1,6 @@
 import 'package:auth_app_user/controller/auth.dart';
 import 'package:auth_app_user/controller/user_db_helper.dart';
 import 'package:auth_app_user/model/user_model.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,19 +18,17 @@ class _HomeScreenState extends State<HomeScreen> {
 @override
   void initState() {
     User().getUsersFromDB();
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-        print(userList);
 
     return  Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: const Text('Home'),
         centerTitle: true,
-        leading: IconButton(icon:Icon(Icons.logout),onPressed: (){
+        leading: IconButton(icon:const Icon(Icons.logout),onPressed: (){
          Auth().signOut();
         },),
         backgroundColor: Colors.blue,
@@ -43,7 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 500,
               width: 500,
            child: 
-           userList.isEmpty?Text('dddddd'):
+           userList.isEmpty?const Text('dddddd'):
+          
            ListView.builder(
             itemCount:userList.length,
             itemBuilder: (context, index) {
@@ -54,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
                    subtitle: Text(user.phone!),
                    trailing: IconButton(onPressed: (){
                      User().deleteUserFromDB(user.id!);
-                     }, icon: Icon(Icons.delete),)
+                     }, icon: const Icon(Icons.delete),)
                      ),
                );
             } ,
@@ -62,32 +60,36 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             FloatingActionButton(onPressed: (){
               showDialog(context: context, builder:(context) => AlertDialog(
-                title: Text('Add User'),
+                title: const Text('Add User'),
                 content: Column(
                   children: [
                     TextField(
                       controller: nameController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Enter User Name',
                         border: OutlineInputBorder()
                         ),
-                        onChanged: (value) => print(value),
                         ),
                         TextField(
                           controller: phoneController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                                 hintText: 'Enter Phone',
                                 border: OutlineInputBorder()),
-                            onChanged: (value) => print(value),
                           ),
-                          ElevatedButton(onPressed: (){
-                            User().addUserToDB(nameController.text, phoneController.text.toString());
-                          }, child:Text('submit'))
+                          ElevatedButton(onPressed: ()async{
+                           await User().addUserToDB(nameController.text, phoneController.text.toString());
+                            setState(() {
+                              nameController.clear();
+                              phoneController.clear();
+                              User().getUsersFromDB();
+                            });
+                            
+                          }, child:const Text('submit'))
                   ],
                 ),
               ),);
             },
-            child: Icon(Icons.add),)
+            child: const Icon(Icons.add),)
           ],
         ),
       )

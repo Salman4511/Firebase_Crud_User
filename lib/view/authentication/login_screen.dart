@@ -1,9 +1,10 @@
 // ignore_for_file: file_names
 import 'package:auth_app_user/controller/auth.dart';
+import 'package:auth_app_user/utils/constants.dart';
+import 'package:auth_app_user/view/widgets/login_textformfield_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-
 
 class Signin extends StatefulWidget {
   const Signin({super.key});
@@ -13,22 +14,23 @@ class Signin extends StatefulWidget {
 }
 
 class _SigninState extends State<Signin> {
- 
   Future<void> signInWithEmailAndPassword() async {
     try {
       await Auth().signInWithEmailAndPassword(
-          email: loginUsernameController.text, password: loginPasswordController.text);
+          email: loginUsernameController.text,
+          password: loginPasswordController.text);
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message!;
       });
     }
   }
- String errorMessage = '';
+
+  String errorMessage = '';
   final _formkey = GlobalKey<FormState>();
   final TextEditingController loginUsernameController = TextEditingController();
   final TextEditingController loginPasswordController = TextEditingController();
-  
+
   bool isObscure = true;
   @override
   void initState() {
@@ -39,28 +41,20 @@ class _SigninState extends State<Signin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 139, 240, 137),
+      backgroundColor: kbgcolor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
       body: Container(
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Color.fromARGB(255, 139, 240, 137),
-          Color.fromARGB(255, 224, 248, 88),
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+        decoration: BoxDecoration(gradient: gradientColor),
         child: ListView(children: [
           Column(
             children: [
-              const SizedBox(
-                height: 60,
-              ),
+              kheight60,
               Row(
                 children: [
-                  const SizedBox(
-                    width: 70,
-                  ),
+                  kwidth70,
                   Column(
                     children: [
                       Animate(
@@ -97,7 +91,7 @@ class _SigninState extends State<Signin> {
                 height: 50,
               ),
               Form(
-                key: _formkey, // Add this line
+                key: _formkey,
                 child: Padding(
                   padding: const EdgeInsets.all(30.0),
                   child: Column(
@@ -107,79 +101,34 @@ class _SigninState extends State<Signin> {
                           FadeEffect(duration: 800.ms),
                           const SlideEffect(curve: Curves.easeIn)
                         ],
-                        child: TextFormField(
+                        child: LoginTextFormFieldWidget(
                           controller: loginUsernameController,
-                          cursorColor: Colors.white,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: const InputDecoration(
-                            labelText: "UserName",
-                            labelStyle: TextStyle(color: Colors.black),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white)),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                            prefixIcon: Icon(Icons.email),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your username';
-                            }
-                            return null;
-                          },
+                          label: "UserName",
+                          validationMsg: 'Please enter your username',
+                          prefixIcon: Icons.email,
+                          isSuffixrequired: false,
                         ),
                       ),
                       const SizedBox(
                         height: 30,
                       ),
                       Animate(
-                        effects: [
-                          FadeEffect(duration: 800.ms),
-                          const SlideEffect(curve: Curves.easeIn)
-                        ],
-                        child: TextFormField(
-                          controller: loginPasswordController,
-                          cursorColor: Colors.white,
-                          obscureText: isObscure ? true : false,
-                          keyboardType: TextInputType.visiblePassword,
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            labelStyle: const TextStyle(color: Colors.black),
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
-                            ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
-                            ),
-                            errorBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                            focusedErrorBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                            prefixIcon: const Icon(Icons.lock),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.visibility),
-                              onPressed: () {
-                                setState(() {
-                                  isObscure = !isObscure;
-                                });
-                              },
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter password';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
+                          effects: [
+                            FadeEffect(duration: 800.ms),
+                            const SlideEffect(curve: Curves.easeIn)
+                          ],
+                          child: LoginTextFormFieldWidget(
+                            controller: loginPasswordController,
+                            label: 'Password',
+                            validationMsg: 'Please enter password',
+                            prefixIcon: Icons.lock,
+                            isSuffixrequired: true,
+                            suffixIconTap: () {
+                              setState(() {
+                                isObscure = !isObscure;
+                              });
+                            },
+                          )),
                       const SizedBox(
                         height: 20,
                       ),
@@ -204,7 +153,7 @@ class _SigninState extends State<Signin> {
                           ],
                           child: ElevatedButton(
                             onPressed: () async {
-                             signInWithEmailAndPassword();
+                              signInWithEmailAndPassword();
                             },
                             style: ElevatedButton.styleFrom(
                                 elevation: 0.0,
@@ -228,41 +177,6 @@ class _SigninState extends State<Signin> {
                       const SizedBox(
                         height: 50,
                       ),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: [
-                      //     Animate(
-                      //       effects: [
-                      //         FadeEffect(duration: 800.ms),
-                      //         const SlideEffect(curve: Curves.easeIn)
-                      //       ],
-                      //       child: const Text(
-                      //         'Dont Have An Account ?',
-                      //         style: TextStyle(
-                      //             fontFamily: 'Courier',
-                      //             color: Color.fromARGB(255, 50, 49, 49)),
-                      //       ),
-                      //     ),
-                      //     const Padding(padding: EdgeInsets.only(left: 20)),
-                      //     TextButton(
-                      //         onPressed: () {
-                      //           Navigator.pushNamed(context, 'signup');
-                      //         },
-                      //         child: Animate(
-                      //           effects: [
-                      //             FadeEffect(duration: 800.ms),
-                      //             const SlideEffect(curve: Curves.easeIn)
-                      //           ],
-                      //           child: const Text(
-                      //             'Sign Up',
-                      //             style: TextStyle(
-                      //                 decoration: TextDecoration.underline,
-                      //                 fontWeight: FontWeight.bold,
-                      //                 color: Colors.black),
-                      //           ),
-                      //         )),
-                      //   ],
-                      // )
                     ],
                   ),
                 ),
